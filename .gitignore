@@ -1,0 +1,9 @@
+﻿# Visual Studio
+.vs/
+# JetBrains Rider
+.idea/
+
+# Build directories
+x64/
+x86/
+
