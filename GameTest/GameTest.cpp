@@ -3,16 +3,15 @@
 
 #include "Screen.h"
 #include "TestScreen.h"
+#include "utils.h"
 #include "app/app.h"
-
-Screen* currentScreen;
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init() {
-	currentScreen = new TestScreen;
-	currentScreen->Init();
+	ScreenHolder::ChangeScreen(new TestScreen());
+	ScreenHolder::GetScreen()->Init();
 }
 
 //------------------------------------------------------------------------
@@ -21,7 +20,7 @@ void Init() {
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	currentScreen->Update();
+	ScreenHolder::GetScreen()->Update();
 	// //------------------------------------------------------------------------
 	// // Example Sprite Code....
 	// testSprite->Update(deltaTime);
@@ -92,7 +91,7 @@ void Update(float deltaTime)
 // See App.h 
 //------------------------------------------------------------------------
 void Render() {
-	currentScreen->Render();
+	ScreenHolder::GetScreen()->Render();
 
 	
 	//App::Print(100, 100, "Sample Text");

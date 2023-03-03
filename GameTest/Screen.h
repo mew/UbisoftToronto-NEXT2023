@@ -9,6 +9,7 @@ public:
     void Init();
     void Update();
     void Render();
+    void ChangeScreen(Screen* newScreen);
     void Exit();
 
     virtual void InitScreenSpecific() {}
@@ -18,6 +19,7 @@ public:
     bool init = false;
     bool exit = false;
     float percent = 0.0f;
+    Screen* nextScreen = nullptr;
 
     std::vector<Component*> components{};
 public:

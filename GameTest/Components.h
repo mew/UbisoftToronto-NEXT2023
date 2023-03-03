@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <string>
+
 #include "Component.h"
 
 class RectComponent : public Component {
@@ -10,4 +12,16 @@ public:
     int colour = 0xFFFFFF;
     
     virtual ~RectComponent() = default;
+};
+
+class Label : public Component {
+public:
+    Label(float x, float y, std::string text, float scale = 1.0f);
+
+    void Render(float percent) override;
+    int colour = 0xFFFFFF;
+    float scale;
+    std::string text;
+    
+    virtual ~Label() = default;
 };

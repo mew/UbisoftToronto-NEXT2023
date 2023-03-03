@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define UTILS Utils::GetInstance()
+#include "TestScreen.h"
 
 class Utils {
 public:
@@ -18,3 +19,16 @@ private:
     static Colour h2c(int h);
 };
 
+class ScreenHolder {
+public:
+    static void ChangeScreen(Screen* n) {
+        currentScreen = n;
+        currentScreen->Init();
+    }
+
+    static Screen* GetScreen() {
+        return currentScreen;
+    }
+private:
+    static Screen* currentScreen;
+};

@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Screen.h"
 
-#include <iostream>
+#include "utils.h"
 
 void Screen::Init() {
     percent = 0.0f;
@@ -18,8 +18,9 @@ void Screen::Update() {
         }
     } else if (exit) {
         percent -= 0.01f;
-        if (percent <= 1) {
+        if (percent <= 0) {
             exit = false;
+            ScreenHolder::ChangeScreen(nextScreen);
         }
     }
 
@@ -28,9 +29,13 @@ void Screen::Update() {
 
 void Screen::Render() {
     for (auto component : components) {
-        std::cout << "rect(" << component->x << "," << component->y << ")" << "|" << init << percent << std::endl;
         component->Render(percent);
     }
+}
+
+void Screen::ChangeScreen(Screen* newScreen) {
+    nextScreen = newScreen;
+    Exit();
 }
 
 void Screen::Exit() {

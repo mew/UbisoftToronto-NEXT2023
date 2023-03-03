@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
 #include "Components.h"
 
-#include <iostream>
 #include <ostream>
 
+#include "FontRenderer.h"
 #include "Screen.h"
 #include "utils.h"
 
@@ -15,9 +15,16 @@ RectComponent::RectComponent(float posX, float posY, float w, float h) {
 }
 
 void RectComponent::Render(float percent) {
-    if (false) {
-        std::cout << "lol" << std::endl;
-    } else {
-        Utils::DrawRect(x, y, x+w, y+h, colour, percent);
-    }
+    Utils::DrawRect(x, y, x+w, y+h, colour, percent);
+}
+
+Label::Label(float x, float y, std::string text, float scale) {
+    this->x = x;
+    this->y = y;
+    this->text = text;
+    this->scale = scale;
+}
+
+void Label::Render(float percent) {
+    FontRenderer::DrawString(text, x, y, percent, colour, scale);
 }

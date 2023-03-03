@@ -44,3 +44,5 @@ Utils::Colour Utils::h2c(const int h) {
     c.b = (h & 0xFF) / 255.0f; // blue
     return c;
 }
+
+Screen* ScreenHolder::currentScreen;
