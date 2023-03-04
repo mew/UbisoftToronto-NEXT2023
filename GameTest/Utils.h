@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #define UTILS Utils::GetInstance()
-#include "TestScreen.h"
+#include "TitleScreen.h"
 
 class Utils {
 public:

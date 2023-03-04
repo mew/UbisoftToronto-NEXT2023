@@ -183,13 +183,12 @@
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="App\TextureLoader.h" />
-    <ClInclude Include="Component.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="FontRenderer.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestScreen.h" />
+    <ClInclude Include="TitleScreen.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +200,7 @@
     <ClCompile Include="App\TextureLoader.cpp" />
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
-    <ClCompile Include="GameTest.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -209,7 +208,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestScreen.cpp" />
+    <ClCompile Include="TitleScreen.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

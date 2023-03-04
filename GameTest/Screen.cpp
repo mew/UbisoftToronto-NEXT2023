@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Screen.h"
-
-#include "utils.h"
+#include "Utils.h"
 
 void Screen::Init() {
     percent = 0.0f;
@@ -16,12 +15,19 @@ void Screen::Update() {
         if (percent >= 1) {
             init = false;
         }
-    } else if (exit) {
+        return;
+    }
+    if (exit) {
         percent -= 0.01f;
         if (percent <= 0) {
             exit = false;
             ScreenHolder::ChangeScreen(nextScreen);
         }
+        return;
+    }
+
+    for (auto component : components) {
+        component->Update();
     }
 
     UpdateScreenSpecific();

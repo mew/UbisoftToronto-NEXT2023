@@ -13,9 +13,16 @@ void FontRenderer::DrawString(std::string str, float x, float y, float percent, 
 void FontRenderer::DrawChar(char c, float x, float y, float percent, int colour, float scale) {
     auto lines = charMap[c];
     for (auto line : lines) {
-        Utils::DrawAnimLine(x + (line.x1 * scale), y + (line.y1 * scale), x + (line.x2 * scale), y + (line.y2 * scale), colour, percent);
+        Utils::DrawAnimLine(
+            x + (line.x1 * scale), y + (line.y1 * scale), x + (line.x2 * scale), y + (line.y2 * scale),
+            colour, percent);
     }
 }
+
+float FontRenderer::GetStringWidth(std::string* str, float scale) {
+    return static_cast<float>(str->length()) * 12 * scale - 2;
+}
+
 
 // this is so cursed
 std::map<char, std::vector<CharLine>> FontRenderer::charMap = {
@@ -45,7 +52,13 @@ std::map<char, std::vector<CharLine>> FontRenderer::charMap = {
     },
     {
         'D',{
-            {10, 0, 10, 10},
+            {0, 0, 0, 10},
+            {0, 10, 7.5, 10},
+            {7.5f, 10, 10, 7.5f},
+            {10, 7.5f, 10, 2.5f},
+            {10, 2.5f, 7.5f, 0},
+            {7.5f, 0, 0, 0},
+            
         }
     },
     {

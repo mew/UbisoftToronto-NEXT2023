@@ -2,7 +2,7 @@
 #include <windows.h> 
 
 #include "Screen.h"
-#include "TestScreen.h"
+#include "TitleScreen.h"
 #include "utils.h"
 #include "app/app.h"
 
@@ -10,7 +10,7 @@
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init() {
-	ScreenHolder::ChangeScreen(new TestScreen());
+	ScreenHolder::ChangeScreen(new TitleScreen());
 	ScreenHolder::GetScreen()->Init();
 }
 

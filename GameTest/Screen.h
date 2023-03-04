@@ -1,6 +1,8 @@
 ﻿#pragma once
-#include "Component.h"
+#include "Components.h"
 #include "app/app.h"
+// ReSharper disable once CppUnusedIncludeDirective
+#include "app/main.h"
 
 #define CENTRE_SCREEN_W (WINDOW_WIDTH >> 1)
 

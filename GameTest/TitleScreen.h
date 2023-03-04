@@ -1,12 +1,9 @@
 ﻿#pragma once
 #include "Screen.h"
 
-class TestScreen : public Screen {
+class TitleScreen : public Screen {
 public:
     void InitScreenSpecific() override;
     void UpdateScreenSpecific() override;
     void ExitScreenSpecific() override;
-    
-public:
-    ~TestScreen() = default;
 };
