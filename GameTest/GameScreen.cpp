@@ -27,6 +27,11 @@ Tile* GameScreen::GetPlayerTile() {
     return grid->GetTile(player->column, player->row);
 }
 
+void GameScreen::DamagePlayer() {
+    playerImmunity = 60;
+    playerHealth--;
+}
+
 void GameScreen::MovePlayer(bool vertical, int direction) {
     int c = player->column;
     int r = player->row;
@@ -78,25 +83,60 @@ void GameScreen::UpdateScreenSpecific() {
     for (int i = 0; i < bombs.size(); i++) {
         auto bomb = bombs[i];
         bomb->Update();
+        auto bombTile = grid->GetTile(bomb->column, bomb->row);
         if (bomb->PostExplode()) {
-            grid->GetTile(bomb->column, bomb->row)->entity = BLANK;
+            bombTile->entity = BLANK;
             bombs.erase(bombs.begin() + i);
             delete bomb;
         } else if (bomb->Explode()) {
+            bomb->Sound();
             auto neighbours = GetTileNeighbours(bomb->column, bomb->row);
+            auto playerTile = GetPlayerTile();
             for (auto neighbour : neighbours) {
-                if (neighbour != nullptr && neighbour->entity == OBSTACLE) {
+                if (neighbour == nullptr) {
+                    continue;
+                }
+                if (neighbour->entity == OBSTACLE) {
                     neighbour->entity = BLANK;
                 }
+                if (playerImmunity < 1 && neighbour == playerTile) {
+                    DamagePlayer();
+                }
             }
+            if (playerImmunity < 1 && bombTile == playerTile) {
+                DamagePlayer();
+            }
+        }
+    }
+
+    if (playerImmunity > 0) {
+        playerImmunity--;
+    }
+
+    if (playerHealth < 1) {
+        // todo you lose!
+        ChangeScreen(new TitleScreen());
+    }
+
+    garbageLeft = 0;
+    for (auto tile : grid->gridTiles) {
+        if (tile->entity == OBSTACLE) {
+            garbageLeft++;
+        }
+    }
+    if (garbageLeft == 0) {
+        objectiveComplete = true;
+
+        if (player->column == 0 && player->row == 22) {
+            // todo you win!
         }
     }
 }
 
 // get adjacent tiles from position:
-//  X
-// XPX
-//  X
+//    X
+//   XPX
+//    X
 std::array<Tile*, 4> GameScreen::GetTileNeighbours(int column, int row) {
     return {
         grid->GetTile(column - 1, row),
@@ -113,15 +153,29 @@ void GameScreen::RenderScreenSpecific() {
     }
 
     // draw player
-    // body
-    Utils::DrawAnimLine(10+player->x, 0+player->y, 15+player->x, 8+player->y, player->colour, percent);
-    Utils::DrawAnimLine(15+player->x, 8+player->y, 20+player->x, 0+player->y, player->colour, percent);
-    Utils::DrawAnimLine(15+player->x, 8+player->y, 15+player->x, 18+player->y, player->colour, percent);
-    Utils::DrawAnimLine(10+player->x, 13+player->y, 20+player->x, 13+player->y, player->colour, percent);
-    // head
-    Utils::DrawRect(10+player->x, 18+player->y, 20+player->x, 28+player->y, player->colour, percent);
+    if (playerImmunity % 2 == 0) {
+        // body
+        Utils::DrawAnimLine(10+player->x, 0+player->y, 15+player->x, 8+player->y, player->colour, percent);
+        Utils::DrawAnimLine(15+player->x, 8+player->y, 20+player->x, 0+player->y, player->colour, percent);
+        Utils::DrawAnimLine(15+player->x, 8+player->y, 15+player->x, 18+player->y, player->colour, percent);
+        Utils::DrawAnimLine(10+player->x, 13+player->y, 20+player->x, 13+player->y, player->colour, percent);
+        // head
+        Utils::DrawRect(10+player->x, 18+player->y, 20+player->x, 28+player->y, player->colour, percent);
+    }
 
-    FontRenderer::DrawString("0123456789", 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+    if (percent == 1.0f) {
+        FontRenderer::DrawString("LEFT", 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+    } else {
+        FontRenderer::DrawString("LEFT " + std::to_string(garbageLeft), 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+    }
+    std::string life = "LIFE " + std::to_string(playerHealth);
+    FontRenderer::DrawString(life, 15+TILE_SIZE*COLUMNS - FontRenderer::GetStringWidth(&life, 3.0f), 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+
+    // draw finish tile
+    if (objectiveComplete) {
+        auto finish = grid->GetTile(0, 22);
+        Utils::DrawFillRect(finish->x, finish->y, finish->x+30, finish->y+30, 0x00FF00, percent);
+    }
     
     // draw bomb
     for (auto bomb : bombs) {

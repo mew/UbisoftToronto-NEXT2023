@@ -24,6 +24,14 @@ void Bomb::Update() {
     }
 }
 
+void Bomb::Sound() {
+    if (played) {
+        return;
+    }
+    played = true;
+    App::PlaySound(".\\TestData\\Test.wav");
+}
+
 bool Bomb::Explode() {
     return timer <= 0 && timer > -60;
 }
