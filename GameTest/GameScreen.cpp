@@ -176,11 +176,13 @@ void GameScreen::RenderScreenSpecific() {
         auto finish = grid->GetTile(0, 22);
         Utils::DrawFillRect(finish->x, finish->y, finish->x+30, finish->y+30, 0x00FF00, percent);
     }
-    
+
+    shake = false;
     // draw bomb
     for (auto bomb : bombs) {
         // draw explosion
         if (bomb->Explode()) {
+            shake = true;
             auto bombTile = grid->GetTile(bomb->column, bomb->row);
             Utils::DrawFillRect(bombTile->x+2, bombTile->y+2,bombTile->x+28,bombTile->y+28, 0xFF0000, percent);
             auto neighbours = GetTileNeighbours(bomb->column, bomb->row);

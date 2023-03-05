@@ -52,3 +52,5 @@ void Screen::Exit() {
 
     ExitScreenSpecific();
 }
+
+bool Screen::shake = false;

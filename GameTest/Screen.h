@@ -23,6 +23,7 @@ public:
     bool exit = false;
     float percent = 0.0f;
     Screen* nextScreen = nullptr;
+    static bool shake;
 
     std::vector<Component*> components{};
 public:

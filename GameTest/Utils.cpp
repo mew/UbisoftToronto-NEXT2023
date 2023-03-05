@@ -35,9 +35,8 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
         y2 += p2;
     }
     
-    bool shake = false;
-    if (shake) {
-        float a = -(p - 1) * 70;
+    if (Screen::shake) {
+        int a = rand() % 5 * (rand() % 2 == 0 ? -1 : 1);
         x2 += cos(a*x2) - sin(a*y2);
         y2 += sin(a*x2) - cos(a*y2);
     }
