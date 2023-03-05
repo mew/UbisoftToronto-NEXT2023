@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Bomb.h"
+#include "FontRenderer.h"
 #include "GameObjects.h"
 
 void GameScreen::InitScreenSpecific() {
@@ -42,7 +43,6 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
         player->Move(c, r);
     }
 }
-
 
 int moveTimer = 0;
 int bombTimer = 0;
@@ -93,6 +93,10 @@ void GameScreen::UpdateScreenSpecific() {
     }
 }
 
+// get adjacent tiles from position:
+//  X
+// XPX
+//  X
 std::array<Tile*, 4> GameScreen::GetTileNeighbours(int column, int row) {
     return {
         grid->GetTile(column - 1, row),
@@ -103,20 +107,25 @@ std::array<Tile*, 4> GameScreen::GetTileNeighbours(int column, int row) {
 }
 
 void GameScreen::RenderScreenSpecific() {
+    // render tile decorations
     for (auto tile : grid->gridTiles) {
         tile->Render(percent);
     }
 
+    // draw player
     // body
     Utils::DrawAnimLine(10+player->x, 0+player->y, 15+player->x, 8+player->y, player->colour, percent);
     Utils::DrawAnimLine(15+player->x, 8+player->y, 20+player->x, 0+player->y, player->colour, percent);
     Utils::DrawAnimLine(15+player->x, 8+player->y, 15+player->x, 18+player->y, player->colour, percent);
     Utils::DrawAnimLine(10+player->x, 13+player->y, 20+player->x, 13+player->y, player->colour, percent);
-
     // head
     Utils::DrawRect(10+player->x, 18+player->y, 20+player->x, 28+player->y, player->colour, percent);
+
+    FontRenderer::DrawString("0123456789", 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
     
+    // draw bomb
     for (auto bomb : bombs) {
+        // draw explosion
         if (bomb->Explode()) {
             auto bombTile = grid->GetTile(bomb->column, bomb->row);
             Utils::DrawFillRect(bombTile->x+2, bombTile->y+2,bombTile->x+28,bombTile->y+28, 0xFF0000, percent);
