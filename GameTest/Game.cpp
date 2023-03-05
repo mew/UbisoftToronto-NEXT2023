@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <windows.h> 
 
+#include "GameScreen.h"
 #include "Screen.h"
 #include "TitleScreen.h"
 #include "utils.h"
@@ -10,7 +11,7 @@
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init() {
-	ScreenHolder::ChangeScreen(new TitleScreen());
+	ScreenHolder::ChangeScreen(new GameScreen());
 	ScreenHolder::GetScreen()->Init();
 }
 

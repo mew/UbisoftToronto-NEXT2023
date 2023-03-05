@@ -37,6 +37,8 @@ void Screen::Render() {
     for (auto component : components) {
         component->Render(percent);
     }
+
+    RenderScreenSpecific();
 }
 
 void Screen::ChangeScreen(Screen* newScreen) {

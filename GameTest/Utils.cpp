@@ -2,11 +2,10 @@
 
 #include <sstream>
 
+#include "GameObjects.h"
 #include "Screen.h"
 #include "utils.h"
 #include "app/app.h"
-
-bool b = true;
 
 void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, float p) {
     bool r = ScreenHolder::GetScreen()->exit;
@@ -52,11 +51,30 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
 }
 
 void Utils::DrawRect(float x1, float y1, float x2, float y2, int colour, float p) {
-    b = true;
     DrawAnimLine(x1, y1, x2, y1, colour, p); 
     DrawAnimLine(x1, y1, x1, y2, colour, p);
     DrawAnimLine(x1, y2, x2, y2, colour, p);
     DrawAnimLine(x2, y1, x2, y2, colour, p);
+}
+
+void Utils::DrawFillRect(float x1, float y1, float x2, float y2, int colour, float p) {
+    DrawRect(x1, y1, x2, y2, colour, p);
+    bool b = y1 > y2;
+    for (float i = y1; b ? i > y2 : i < y2; b ? i-- : i++) {
+        if ((int) i % 2 == 0) {
+            DrawAnimLine(x1, i, x2, i, colour, p);
+        }
+    }
+}
+
+GridPos Utils::LiteralToGrid(float x, float y) {
+    x -= 12;
+    y -= 9;
+    return GridPos{(int) x / TILE_SIZE, (int) y / TILE_SIZE};
+}
+
+LiteralPos Utils::GridToLiteral(int column, int row) {
+    return LiteralPos{static_cast<float>(column * TILE_SIZE + 15), static_cast<float>(row * TILE_SIZE + 10)};
 }
 
 float Utils::easePos2(float pos1, float pos2, float percent) {
@@ -65,13 +83,8 @@ float Utils::easePos2(float pos1, float pos2, float percent) {
     return pos1 + (diff * p);
 }
 
-Utils Utils::GetInstance() {
-    static Utils u;
-    return u;
-}
-
 Utils::Colour Utils::h2c(const int h) {
-    Colour c{};
+    Colour c;
     c.r = ((h >> 16) & 0xFF) / 255.0f; // red
     c.g = ((h >> 8) & 0xFF) / 255.0f; // green
     c.b = (h & 0xFF) / 255.0f; // blue

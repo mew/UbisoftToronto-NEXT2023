@@ -16,6 +16,7 @@ public:
 
     virtual void InitScreenSpecific() {}
     virtual void UpdateScreenSpecific() {}
+    virtual void RenderScreenSpecific() {}
     virtual void ExitScreenSpecific() {}
 
     bool init = false;
