@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Bomb.h"
+#include "EndScreen.h"
 #include "FontRenderer.h"
 #include "GameObjects.h"
 
@@ -58,9 +59,6 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
     }
 }
 
-int moveTimer = 0;
-int bombTimer = 0;
-int enemyMoveTimer = 60;
 void GameScreen::UpdateScreenSpecific() {
     if (App::IsKeyPressed(VK_SPACE) && bombTimer <= 0) {
         auto playerTile = GetPlayerTile();
@@ -139,7 +137,7 @@ void GameScreen::UpdateScreenSpecific() {
 
     if (playerHealth < 1) {
         // todo you lose!
-        ChangeScreen(new TitleScreen());
+        ChangeScreen(new EndScreen(false));
     }
 
     garbageLeft = 0;
@@ -152,7 +150,7 @@ void GameScreen::UpdateScreenSpecific() {
         objectiveComplete = true;
 
         if (player->column == 0 && player->row == 22) {
-            // todo you win!
+            ChangeScreen(new EndScreen(true));
         }
     }
 
@@ -244,7 +242,9 @@ void GameScreen::RenderScreenSpecific() {
     for (auto bomb : bombs) {
         // draw explosion
         if (bomb->Explode()) {
-            shake = true;
+            if (!exit) {
+                shake = true;
+            }
             auto bombTile = grid->GetTile(bomb->column, bomb->row);
             Utils::DrawFillRect(bombTile->x+2, bombTile->y+2,bombTile->x+28,bombTile->y+28, 0xFF0000, percent);
             auto neighbours = GetTileNeighbours(bomb->column, bomb->row);

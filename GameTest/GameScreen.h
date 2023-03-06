@@ -17,6 +17,9 @@ private:
     int garbageLeft = 0;
     int playerHealth = 3;
     int playerImmunity = 60;
+    int moveTimer = 0;
+    int bombTimer = 0;
+    int enemyMoveTimer = 60;
     Grid* grid = nullptr;
     TileObject* player = nullptr;
     std::vector<Bomb*> bombs{};

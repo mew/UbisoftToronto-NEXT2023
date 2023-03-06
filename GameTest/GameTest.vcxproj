@@ -185,6 +185,7 @@
     <ClInclude Include="App\TextureLoader.h" />
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="EndScreen.h" />
     <ClInclude Include="FontRenderer.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="GameScreen.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="App\TextureLoader.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Components.cpp" />
+    <ClCompile Include="EndScreen.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObjects.cpp" />
