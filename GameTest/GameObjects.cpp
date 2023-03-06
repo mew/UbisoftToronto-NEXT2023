@@ -36,27 +36,28 @@ Tile::Tile(int column, int row, TileEntity start) {
                     second.y = rand() % TILE_SIZE;
                 } while (abs(first.x - second.x) <= 4 && abs(first.y - second.y) <= 4);
 
-                crack.push_back({first, second});
+                crack.emplace_back(first, second);
             }
             cracks.push_back(crack);
         }
     }
 }
 
-void Tile::Render(float percent) {
+void Tile::Render() {
     if (entity == WALL) {
-        Utils::DrawRect(x, y, x+TILE_SIZE, y+TILE_SIZE, 0xBBBBBB, percent);
+        Utils::DrawRect(x, y, x+TILE_SIZE, y+TILE_SIZE, 0xBBBBBB);
     } else if (entity == OBSTACLE) {
-        Utils::DrawRect(x, y, x+TILE_SIZE, y+TILE_SIZE, 0xBBBBBB, percent);
+        // draw obstacle with random lines inside to differentiate from immovable walls
+        Utils::DrawRect(x, y, x+TILE_SIZE, y+TILE_SIZE, 0xBBBBBB);
         for (auto lines : cracks) {
             for (auto line : lines) {
-                Utils::DrawAnimLine(line.first.x + x, line.first.y + y, line.second.x + x, line.second.y + y, 0x999999, percent);
+                Utils::DrawAnimLine(line.first.x + x, line.first.y + y, line.second.x + x, line.second.y + y, 0x999999);
             }
         }
     }
 }
 
-bool Tile::Traversable() {
+bool Tile::Traversable() const {
     return entity == BLANK || entity == BOMB || entity == ENEMY || entity == PLAYER;
 }
 
@@ -69,12 +70,14 @@ TileObject::TileObject(int column, int row) {
 void TileObject::Move(int column, int row) {
     this->column = column;
     this->row = row;
+    // we need to set the render position too
     auto l = Utils::GridToLiteral(column, row);
     this->x = l.x;
     this->y = l.y;
 }
 
 void Grid::InitGrid() {
+    // you don't want to know
     for (int i = 0; i < COLUMNS; i++) {
         auto column = std::vector<Tile*>{};
         for (int j = 0; j < ROWS; j++) {
@@ -119,8 +122,8 @@ void Grid::Update() {
 #endif
 }
 
-void Grid::Render(float percent) {
-    Utils::DrawRect(15, 10, 15+TILE_SIZE*COLUMNS, 10+TILE_SIZE*ROWS, 0xFFFFFF, percent);
+void Grid::Render() {
+    Utils::DrawRect(15, 10, 15+TILE_SIZE*COLUMNS, 10+TILE_SIZE*ROWS, 0xFFFFFF);
 }
 
 Tile* Grid::GetTile(const int column, const int row) const {

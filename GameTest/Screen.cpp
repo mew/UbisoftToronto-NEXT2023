@@ -35,7 +35,7 @@ void Screen::Update() {
 
 void Screen::Render() {
     for (auto component : components) {
-        component->Render(percent);
+        component->Render();
     }
 
     RenderScreenSpecific();
@@ -50,8 +50,7 @@ void Screen::ChangeScreen(Screen* newScreen) {
 void Screen::Exit() {
     percent = 1.0f;
     exit = true;
-
-    ExitScreenSpecific();
 }
 
 bool Screen::shake = false;
+float Screen::percent = 0.0f;

@@ -3,8 +3,9 @@
 
 class EndScreen final : public Screen {
 public:
+    /**
+     * \brief Screen displayed after the game.
+     * \param w did player win
+     */
     explicit EndScreen(bool w);
-    void InitScreenSpecific() override;
-private:
-    
 };

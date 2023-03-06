@@ -6,13 +6,34 @@
 class GameScreen final : public Screen {
 public:
     void InitScreenSpecific() override;
+    /**
+     * \brief Gets the tile the player is currently standing on
+     * \return Tile player is currently on
+     */
     Tile* GetPlayerTile();
-    void DamagePlayer();
-    void MovePlayer(bool vertical, int direction);
+    
     void UpdateScreenSpecific() override;
-    std::array<Tile*, 4> GetTileNeighbours(int column, int row);
     void RenderScreenSpecific() override;
 private:
+    /**
+     * \brief Deal damage to the player and give them iframes
+     */
+    void DamagePlayer();
+    
+    /**
+     * \brief Move player in positive or negative direction.
+     *          x/y determined by vertical parameter
+     * \param vertical moving vertically?
+     * \param direction positive or negative direction
+     */
+    void MovePlayer(bool vertical, int direction);
+
+    /**
+     * \brief Get adjacent tiles from grid position.
+     * \return array of adjacent tiles
+     */
+    std::array<Tile*, 4> GetTileNeighbours(int column, int row);
+    
     bool objectiveComplete = false;
     int garbageLeft = 0;
     int playerHealth = 3;

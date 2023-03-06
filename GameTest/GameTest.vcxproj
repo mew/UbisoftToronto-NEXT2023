@@ -184,11 +184,13 @@
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="App\TextureLoader.h" />
     <ClInclude Include="Bomb.h" />
-    <ClInclude Include="Components.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="EndScreen.h" />
     <ClInclude Include="FontRenderer.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="GameScreen.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -203,12 +205,13 @@
     <ClCompile Include="App\SimpleSprite.cpp" />
     <ClCompile Include="App\TextureLoader.cpp" />
     <ClCompile Include="Bomb.cpp" />
-    <ClCompile Include="Components.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="EndScreen.cpp" />
     <ClCompile Include="FontRenderer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="GameScreen.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

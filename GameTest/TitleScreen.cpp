@@ -1,9 +1,10 @@
 ﻿#include "stdafx.h"
 #include "TitleScreen.h"
 
-#include "Components.h"
+#include "Button.h"
 #include "FontRenderer.h"
 #include "GameScreen.h"
+#include "Label.h"
 
 void TitleScreen::InitScreenSpecific() {
     components.push_back(new Label(CENTRE_SCREEN_W - (12*8*9 >> 1), 600, "BOMB GAME", 8.0f));
@@ -22,8 +23,4 @@ void TitleScreen::UpdateScreenSpecific() {
     if (App::IsKeyPressed(VK_SPACE)) {
         ChangeScreen(new TitleScreen());
     }
-}
-
-void TitleScreen::ExitScreenSpecific() {
-    
 }

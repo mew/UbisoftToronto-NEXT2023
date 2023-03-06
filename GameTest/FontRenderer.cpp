@@ -1,21 +1,23 @@
 ﻿#include "stdafx.h"
 #include "FontRenderer.h"
 
-#include "utils.h"
+#include "Utils.h"
 
-void FontRenderer::DrawString(std::string str, float x, float y, float percent, int colour, float scale) {
+void FontRenderer::DrawString(std::string str, float x, float y, int colour, float scale) {
+    // draw each character in string :)
     for (char c : str) {
-        DrawChar(c, x, y, percent, colour, scale);
+        DrawChar(c, x, y, colour, scale);
         x += 12 * scale;
     }
 }
 
-void FontRenderer::DrawChar(char c, float x, float y, float percent, int colour, float scale) {
+void FontRenderer::DrawChar(char c, float x, float y, int colour, float scale) {
+    // get character from map and draw necessary lines
     auto lines = charMap[c];
     for (auto line : lines) {
         Utils::DrawAnimLine(
             x + (line.x1 * scale), y + (line.y1 * scale), x + (line.x2 * scale), y + (line.y2 * scale),
-            colour, percent);
+            colour);
     }
 }
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Components.h"
+#include "Component.h"
 #include "app/app.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "app/main.h"
@@ -14,18 +14,18 @@ public:
     void ChangeScreen(Screen* newScreen);
     void Exit();
 
+    // Extendable methods
     virtual void InitScreenSpecific() {}
     virtual void UpdateScreenSpecific() {}
     virtual void RenderScreenSpecific() {}
-    virtual void ExitScreenSpecific() {}
 
-    bool init = false;
     bool exit = false;
-    float percent = 0.0f;
     Screen* nextScreen = nullptr;
+    static float percent;
     static bool shake;
 
     std::vector<Component*> components{};
-public:
+protected:
+    bool init = false;
     virtual ~Screen() = default;
 };

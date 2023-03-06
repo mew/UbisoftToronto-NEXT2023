@@ -1,12 +1,15 @@
 ﻿#include "stdafx.h"
 #include "EndScreen.h"
 
+#include "Button.h"
+#include "Label.h"
 #include "TitleScreen.h"
 
 EndScreen::EndScreen(bool w) {
     std::string txt;
     float pos;
     int col;
+    // change some elements depending on if player won or died
     if (w) {
         txt = "YOU WON";
         pos = CENTRE_SCREEN_W - (12*8*7 >> 1);
@@ -28,8 +31,4 @@ EndScreen::EndScreen(bool w) {
     });
     exitButton->hoverColour = 0xFF0000;
     components.push_back(exitButton);
-}
-
-void EndScreen::InitScreenSpecific() {
-    Screen::InitScreenSpecific();
 }

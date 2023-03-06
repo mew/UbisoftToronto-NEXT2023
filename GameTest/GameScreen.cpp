@@ -9,6 +9,10 @@
 #include "FontRenderer.h"
 #include "GameObjects.h"
 
+// 
+// Most of the game code is in here.
+// 
+
 void GameScreen::InitScreenSpecific() {
     // lol
     srand(time(nullptr));
@@ -22,6 +26,9 @@ void GameScreen::InitScreenSpecific() {
     //  when it was in it's own class
     this->player = new TileObject(0, 22);
     components.push_back(player);
+
+    // create enemies
+    //  this is scuffed for a reason, i think?
     for (int i = 0; i < COLUMNS; i++) {
         for (int j = 0; j < ROWS; j++) {
             auto tile = grid->GetTile(i, j);
@@ -51,6 +58,7 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
     if (destTile == nullptr) {
         return;
     }
+    // can't move if tile is occupied by an obstacle
     if (destTile->Traversable()) {
         destTile->entity = destTile->entity == BOMB ? BOMB : PLAYER;
         auto playerTile = GetPlayerTile();
@@ -60,6 +68,7 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
 }
 
 void GameScreen::UpdateScreenSpecific() {
+    // try to place a bomb
     if (App::IsKeyPressed(VK_SPACE) && bombTimer <= 0) {
         auto playerTile = GetPlayerTile();
         if (playerTile->entity != BOMB) {
@@ -70,7 +79,8 @@ void GameScreen::UpdateScreenSpecific() {
     } else {
         bombTimer--;
     }
-    
+
+    // move player
     if (moveTimer <= 0) {
         moveTimer = 5;
         if (App::IsKeyPressed(VK_RIGHT) || App::IsKeyPressed('D')) {
@@ -88,6 +98,7 @@ void GameScreen::UpdateScreenSpecific() {
         moveTimer--;
     }
 
+    // handle bomb explosion
     for (int i = 0; i < bombs.size(); i++) {
         auto bomb = bombs[i];
         bomb->Update();
@@ -131,15 +142,18 @@ void GameScreen::UpdateScreenSpecific() {
         }
     }
 
+    // decrease amount of iframes left
     if (playerImmunity > 0) {
         playerImmunity--;
     }
 
+    // check if game over
     if (playerHealth < 1) {
         // todo you lose!
         ChangeScreen(new EndScreen(false));
     }
 
+    // count obstacles remaining
     garbageLeft = 0;
     for (auto tile : grid->gridTiles) {
         if (tile->entity == OBSTACLE) {
@@ -162,20 +176,20 @@ void GameScreen::UpdateScreenSpecific() {
             }
         }
 
-        // enemy "ai"
+        // enemy "ai" (this is bad).
         if (enemyMoveTimer < 1) {
             enemyMoveTimer = 90;
             auto enemyTile = grid->GetTile(enemy->column, enemy->row);
             //dulr
             //0123
             auto neighbours = GetTileNeighbours(enemy->column, enemy->row);
-            if (player->column > enemyTile->column && neighbours[3] != nullptr && neighbours[3]->Traversable()) {
+            if (player->row > enemyTile->row && neighbours[3] != nullptr && neighbours[3]->Traversable()) {
                 enemy->Move(neighbours[3]->column, neighbours[3]->row);
-            } else if (player->column < enemyTile->column && neighbours[2] != nullptr && neighbours[2]->Traversable()) {
+            } else if (player->row < enemyTile->row && neighbours[2] != nullptr && neighbours[2]->Traversable()) {
                 enemy->Move(neighbours[2]->column, neighbours[2]->row);
-            } else if (player->row > enemyTile->row && neighbours[1] != nullptr && neighbours[1]->Traversable()) {
+            } else if (player->column > enemyTile->column && neighbours[1] != nullptr && neighbours[1]->Traversable()) {
                 enemy->Move(neighbours[1]->column, neighbours[1]->row);
-            } else if (player->row < enemyTile->row && neighbours[0] != nullptr && neighbours[0]->Traversable()) {
+            } else if (player->column < enemyTile->column && neighbours[0] != nullptr && neighbours[0]->Traversable()) {
                 enemy->Move(neighbours[0]->column, neighbours[0]->row);
             } else {
                 // move to first available neighbour
@@ -193,10 +207,6 @@ void GameScreen::UpdateScreenSpecific() {
     }
 }
 
-// get adjacent tiles from position:
-//    X
-//   XPX
-//    X
 std::array<Tile*, 4> GameScreen::GetTileNeighbours(int column, int row) {
     return {
         grid->GetTile(column - 1, row),
@@ -209,32 +219,33 @@ std::array<Tile*, 4> GameScreen::GetTileNeighbours(int column, int row) {
 void GameScreen::RenderScreenSpecific() {
     // render tile decorations
     for (auto tile : grid->gridTiles) {
-        tile->Render(percent);
+        tile->Render();
     }
 
     // draw player
     if (playerImmunity % 2 == 0) {
         // body
-        Utils::DrawAnimLine(10+player->x, 0+player->y, 15+player->x, 8+player->y, player->colour, percent);
-        Utils::DrawAnimLine(15+player->x, 8+player->y, 20+player->x, 0+player->y, player->colour, percent);
-        Utils::DrawAnimLine(15+player->x, 8+player->y, 15+player->x, 18+player->y, player->colour, percent);
-        Utils::DrawAnimLine(10+player->x, 13+player->y, 20+player->x, 13+player->y, player->colour, percent);
+        Utils::DrawAnimLine(10+player->x, 0+player->y, 15+player->x, 8+player->y, player->colour);
+        Utils::DrawAnimLine(15+player->x, 8+player->y, 20+player->x, 0+player->y, player->colour);
+        Utils::DrawAnimLine(15+player->x, 8+player->y, 15+player->x, 18+player->y, player->colour);
+        Utils::DrawAnimLine(10+player->x, 13+player->y, 20+player->x, 13+player->y, player->colour);
         // head
-        Utils::DrawRect(10+player->x, 18+player->y, 20+player->x, 28+player->y, player->colour, percent);
+        Utils::DrawRect(10+player->x, 18+player->y, 20+player->x, 28+player->y, player->colour);
     }
 
+    // render ui
     if (percent == 1.0f) {
-        FontRenderer::DrawString("LEFT", 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+        FontRenderer::DrawString("LEFT", 20, 10+TILE_SIZE*ROWS+10, 0xFFFFFF, 3.0f);
     } else {
-        FontRenderer::DrawString("LEFT " + std::to_string(garbageLeft), 20, 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+        FontRenderer::DrawString("LEFT " + std::to_string(garbageLeft), 20, 10+TILE_SIZE*ROWS+10, 0xFFFFFF, 3.0f);
     }
     std::string life = "LIFE " + std::to_string(playerHealth);
-    FontRenderer::DrawString(life, 15+TILE_SIZE*COLUMNS - FontRenderer::GetStringWidth(&life, 3.0f), 10+TILE_SIZE*ROWS+10, percent, 0xFFFFFF, 3.0f);
+    FontRenderer::DrawString(life, 15+TILE_SIZE*COLUMNS - FontRenderer::GetStringWidth(&life, 3.0f), 10+TILE_SIZE*ROWS+10, 0xFFFFFF, 3.0f);
 
     // draw finish tile
     if (objectiveComplete) {
         auto finish = grid->GetTile(0, 22);
-        Utils::DrawFillRect(finish->x, finish->y, finish->x+30, finish->y+30, 0x00FF00, percent);
+        Utils::DrawFillRect(finish->x, finish->y, finish->x+30, finish->y+30, 0x00FF00);
     }
 
     shake = false;
@@ -243,26 +254,27 @@ void GameScreen::RenderScreenSpecific() {
         // draw explosion
         if (bomb->Explode()) {
             if (!exit) {
+                // enable shaking effect (impl in Utils)
                 shake = true;
             }
             auto bombTile = grid->GetTile(bomb->column, bomb->row);
-            Utils::DrawFillRect(bombTile->x+2, bombTile->y+2,bombTile->x+28,bombTile->y+28, 0xFF0000, percent);
+            Utils::DrawFillRect(bombTile->x+2, bombTile->y+2,bombTile->x+28,bombTile->y+28, 0xFF0000);
             auto neighbours = GetTileNeighbours(bomb->column, bomb->row);
             for (Tile* neighbour : neighbours) {
                 if (neighbour == nullptr || neighbour->entity == WALL) {
                     continue;
                 }
-                Utils::DrawFillRect(neighbour->x+2, neighbour->y+2, neighbour->x+28, neighbour->y+28, 0xFF0000, percent);
+                Utils::DrawFillRect(neighbour->x+2, neighbour->y+2, neighbour->x+28, neighbour->y+28, 0xFF0000);
             }
         } else {
-            bomb->Render(percent);
+            bomb->Render();
         }
     }
 
     for (auto enemy : enemies) {
         // basic enemy face
-        Utils::DrawRect(enemy->x+5, enemy->y+5, enemy->x+25, enemy->y+25, enemy->colour, percent);
-        Utils::DrawAnimLine(enemy->x+10, enemy->y+22.5f, enemy->x+10, enemy->y+16.5f, enemy->colour, percent);
-        Utils::DrawAnimLine(enemy->x+20, enemy->y+22.5f, enemy->x+20, enemy->y+16.5f, enemy->colour, percent);
+        Utils::DrawRect(enemy->x+5, enemy->y+5, enemy->x+25, enemy->y+25, enemy->colour);
+        Utils::DrawAnimLine(enemy->x+10, enemy->y+22.5f, enemy->x+10, enemy->y+16.5f, enemy->colour);
+        Utils::DrawAnimLine(enemy->x+20, enemy->y+22.5f, enemy->x+20, enemy->y+16.5f, enemy->colour);
     }
 }

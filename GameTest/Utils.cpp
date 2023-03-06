@@ -7,19 +7,19 @@
 #include "utils.h"
 #include "app/app.h"
 
-void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, float p) {
+void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour) {
     bool r = ScreenHolder::GetScreen()->exit;
 
     if (r) {
         bool cw = x1 > x2;
         // angle in degrees
-        float a = -(p - 1) * 90 * PI / 180;
+        float a = -(Screen::percent - 1) * 90 * PI / 180;
 
         // line centre
         float p1 = (x2 + x1) / 2;
         float p2 = (y2 + y1) / 2;
 
-        // rotate
+        // rotate point 1
         x1 -= p1;
         y1 -= p2;
         x1 = cw ? x1 * cos(a) - y1 * sin(a) : x1 * cos(a) + y1 * sin(a);
@@ -27,6 +27,7 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
         x1 += p1;
         y1 += p2;
 
+        // rotate point 2
         x2 -= p1;
         y2 -= p2;
         x2 = cw ? x2 * cos(a) - y2 * sin(a) : x2 * cos(a) + y2 * sin(a);
@@ -36,6 +37,7 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
     }
     
     if (Screen::shake) {
+        // shake screen effect
         int a = rand() % 5 * (rand() % 2 == 0 ? -1 : 1);
         int b = rand() % 5 * (rand() % 2 == 0 ? -1 : 1);
         x1 += cos(b*x2) - sin(b*y2);
@@ -44,34 +46,35 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
         y2 += sin(a*x2) - cos(a*y2);
     }
 
-    x2 = easePos2(x1, x2, p);
-    y2 = easePos2(y1, y2, p);
-
+    x2 = easePos2(x1, x2, Screen::percent);
+    y2 = easePos2(y1, y2, Screen::percent);
 
     Colour c = h2c(colour);
     App::DrawLine(x1, y1, x2, y2, c.r, c.g, c.b);
 }
 
-void Utils::DrawRect(float x1, float y1, float x2, float y2, int colour, float p) {
-    DrawAnimLine(x1, y1, x2, y1, colour, p); 
-    DrawAnimLine(x1, y1, x1, y2, colour, p);
-    DrawAnimLine(x1, y2, x2, y2, colour, p);
-    DrawAnimLine(x2, y1, x2, y2, colour, p);
+void Utils::DrawRect(float x1, float y1, float x2, float y2, int colour) {
+    DrawAnimLine(x1, y1, x2, y1, colour); 
+    DrawAnimLine(x1, y1, x1, y2, colour);
+    DrawAnimLine(x1, y2, x2, y2, colour);
+    DrawAnimLine(x2, y1, x2, y2, colour);
 }
 
-void Utils::DrawFillRect(float x1, float y1, float x2, float y2, int colour, float p) {
-    DrawRect(x1, y1, x2, y2, colour, p);
+void Utils::DrawFillRect(float x1, float y1, float x2, float y2, int colour) {
+    DrawRect(x1, y1, x2, y2, colour);
     bool b = y1 > y2;
     for (float i = y1; b ? i > y2 : i < y2; b ? i-- : i++) {
         if ((int) i % 2 == 0) {
-            DrawAnimLine(x1, i, x2, i, colour, p);
+            DrawAnimLine(x1, i, x2, i, colour);
         }
     }
 }
 
 GridPos Utils::LiteralToGrid(float x, float y) {
+    // subtract gap between edge of the grid and the edge of the window 
     x -= 12;
     y -= 9;
+    
     return GridPos{(int) x / TILE_SIZE, (int) y / TILE_SIZE};
 }
 

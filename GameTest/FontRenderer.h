@@ -10,8 +10,8 @@ struct CharLine {
 // oh dear
 class FontRenderer {
 public:
-    static void DrawString(std::string str, float x, float y, float percent, int colour, float scale = 1.0f);
-    static void DrawChar(char c, float x, float y, float percent, int colour, float scale);
+    static void DrawString(std::string str, float x, float y, int colour, float scale = 1.0f);
+    static void DrawChar(char c, float x, float y, int colour, float scale);
     static float GetStringWidth(std::string* str, float scale);
 private:
     static std::map<char, std::vector<CharLine>> charMap;
