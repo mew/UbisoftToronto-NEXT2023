@@ -21,6 +21,16 @@ void GameScreen::InitScreenSpecific() {
     //  when it was in it's own class
     this->player = new TileObject(0, 22);
     components.push_back(player);
+    for (int i = 0; i < COLUMNS; i++) {
+        for (int j = 0; j < ROWS; j++) {
+            auto tile = grid->GetTile(i, j);
+            if (tile->entity == ENEMY) {
+                auto enemy = new TileObject(i, j);
+                enemy->colour = 0x0000FF;
+                enemies.push_back(enemy);
+            }
+        }
+    }
 }
 
 Tile* GameScreen::GetPlayerTile() {
@@ -40,7 +50,6 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
     if (destTile == nullptr) {
         return;
     }
-    std::cout << "Tile(" << destTile->column << "," << destTile->row << ")" << destTile->entity << std::endl;
     if (destTile->Traversable()) {
         destTile->entity = destTile->entity == BOMB ? BOMB : PLAYER;
         auto playerTile = GetPlayerTile();
@@ -51,6 +60,7 @@ void GameScreen::MovePlayer(bool vertical, int direction) {
 
 int moveTimer = 0;
 int bombTimer = 0;
+int enemyMoveTimer = 60;
 void GameScreen::UpdateScreenSpecific() {
     if (App::IsKeyPressed(VK_SPACE) && bombTimer <= 0) {
         auto playerTile = GetPlayerTile();
@@ -102,6 +112,20 @@ void GameScreen::UpdateScreenSpecific() {
                 if (playerImmunity < 1 && neighbour == playerTile) {
                     DamagePlayer();
                 }
+                for (int j = 0; j < enemies.size(); j++) {
+                    auto enemy = enemies[j];
+                    if (enemy->column == neighbour->column && enemy->row == neighbour->row) {
+                        enemies.erase(enemies.begin() + j);
+                        delete enemy;
+                    }
+                }
+            }
+            for (int j = 0; j < enemies.size(); j++) {
+                auto enemy = enemies[j];
+                if (enemy->column == bombTile->column && enemy->row == bombTile->row) {
+                    enemies.erase(enemies.begin() + j);
+                    delete enemy;
+                }
             }
             if (playerImmunity < 1 && bombTile == playerTile) {
                 DamagePlayer();
@@ -129,6 +153,44 @@ void GameScreen::UpdateScreenSpecific() {
 
         if (player->column == 0 && player->row == 22) {
             // todo you win!
+        }
+    }
+
+    
+    for (auto enemy : enemies) {
+        if (playerImmunity < 1) {
+            if (enemy->column == player->column && enemy->row == player->row) {
+                DamagePlayer();
+            }
+        }
+
+        // enemy "ai"
+        if (enemyMoveTimer < 1) {
+            enemyMoveTimer = 90;
+            auto enemyTile = grid->GetTile(enemy->column, enemy->row);
+            //dulr
+            //0123
+            auto neighbours = GetTileNeighbours(enemy->column, enemy->row);
+            if (player->column > enemyTile->column && neighbours[3] != nullptr && neighbours[3]->Traversable()) {
+                enemy->Move(neighbours[3]->column, neighbours[3]->row);
+            } else if (player->column < enemyTile->column && neighbours[2] != nullptr && neighbours[2]->Traversable()) {
+                enemy->Move(neighbours[2]->column, neighbours[2]->row);
+            } else if (player->row > enemyTile->row && neighbours[1] != nullptr && neighbours[1]->Traversable()) {
+                enemy->Move(neighbours[1]->column, neighbours[1]->row);
+            } else if (player->row < enemyTile->row && neighbours[0] != nullptr && neighbours[0]->Traversable()) {
+                enemy->Move(neighbours[0]->column, neighbours[0]->row);
+            } else {
+                // move to first available neighbour
+                for (auto neighbour : neighbours) {
+                    if (neighbour == nullptr || !neighbour->Traversable()) {
+                        continue;
+                    }
+                    enemy->Move(neighbour->column, neighbour->row);
+                    break;
+                }
+            }
+        } else {
+            enemyMoveTimer--;
         }
     }
 }
@@ -195,5 +257,12 @@ void GameScreen::RenderScreenSpecific() {
         } else {
             bomb->Render(percent);
         }
+    }
+
+    for (auto enemy : enemies) {
+        // basic enemy face
+        Utils::DrawRect(enemy->x+5, enemy->y+5, enemy->x+25, enemy->y+25, enemy->colour, percent);
+        Utils::DrawAnimLine(enemy->x+10, enemy->y+22.5f, enemy->x+10, enemy->y+16.5f, enemy->colour, percent);
+        Utils::DrawAnimLine(enemy->x+20, enemy->y+22.5f, enemy->x+20, enemy->y+16.5f, enemy->colour, percent);
     }
 }

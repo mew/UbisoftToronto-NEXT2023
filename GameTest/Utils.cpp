@@ -13,7 +13,7 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
     if (r) {
         bool cw = x1 > x2;
         // angle in degrees
-        float a = (-(p - 1) * 90) * PI / 180;
+        float a = -(p - 1) * 90 * PI / 180;
 
         // line centre
         float p1 = (x2 + x1) / 2;
@@ -37,6 +37,9 @@ void Utils::DrawAnimLine(float x1, float y1, float x2, float y2, int colour, flo
     
     if (Screen::shake) {
         int a = rand() % 5 * (rand() % 2 == 0 ? -1 : 1);
+        int b = rand() % 5 * (rand() % 2 == 0 ? -1 : 1);
+        x1 += cos(b*x2) - sin(b*y2);
+        y1 += sin(b*x2) - cos(b*y2);
         x2 += cos(a*x2) - sin(a*y2);
         y2 += sin(a*x2) - cos(a*y2);
     }

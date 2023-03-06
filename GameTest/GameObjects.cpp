@@ -103,27 +103,23 @@ int t = 0;
 #endif
 void Grid::Update() {
 #ifdef _DEBUG
-    if (App::IsKeyPressed(VK_LBUTTON)) {
-        if (t == 1) {
-            return;
-        }
-        t = 1;
-        float mx, my;
-        App::GetMousePos(mx, my);
-        auto g = Utils::LiteralToGrid(mx, my);
-        auto t = GetTile(g.x, g.y);
-        std::cout << "Tile(" << t->column <<"," << t->row << ") " << t->entity << std::endl;
-    } else {
-        t = 0;
-    }
+    // if (App::IsKeyPressed(VK_LBUTTON)) {
+    //     if (t == 1) {
+    //         return;
+    //     }
+    //     t = 1;
+    //     float mx, my;
+    //     App::GetMousePos(mx, my);
+    //     auto g = Utils::LiteralToGrid(mx, my);
+    //     auto t = GetTile(g.x, g.y);
+    //     std::cout << "Tile(" << t->column <<"," << t->row << ") " << t->entity << std::endl;
+    // } else {
+    //     t = 0;
+    // }
 #endif
 }
 
 void Grid::Render(float percent) {
-    //for (auto tile : gridTiles) {
-    //    tile->Render(percent);
-    //}
-    
     Utils::DrawRect(15, 10, 15+TILE_SIZE*COLUMNS, 10+TILE_SIZE*ROWS, 0xFFFFFF, percent);
 }
 

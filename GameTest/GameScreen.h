@@ -20,4 +20,5 @@ private:
     Grid* grid = nullptr;
     TileObject* player = nullptr;
     std::vector<Bomb*> bombs{};
+    std::vector<TileObject*> enemies{};
 };

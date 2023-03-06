@@ -36,8 +36,6 @@ public:
 
     void Move(int column, int row);
     int column, row;
-protected:
-    ~TileObject() = default;
 };
 
 class Grid final : public Component {
@@ -48,9 +46,5 @@ public:
     Tile* GetTile(int x, int y) const;
     std::vector<Tile*> gridTiles{};
 private:
-    
-};
-
-class Enemy {
     
 };

@@ -42,6 +42,7 @@ void Screen::Render() {
 }
 
 void Screen::ChangeScreen(Screen* newScreen) {
+    shake = false;
     nextScreen = newScreen;
     Exit();
 }
