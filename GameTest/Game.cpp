@@ -11,7 +11,7 @@
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init() {
-	ScreenHolder::ChangeScreen(new GameScreen());
+	ScreenHolder::ChangeScreen(new TitleScreen());
 	ScreenHolder::GetScreen()->Init();
 }
 
